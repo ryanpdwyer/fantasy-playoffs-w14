@@ -140,7 +140,7 @@ def analyzePlayoffResults(playoffResults, teams):
 
 # st.write('''<div style='height: 200px; background-image: url("https://lh5.googleusercontent.com/GAmGcsk5dPuofSN8eXAYinlFC8lxIQdvynYW7CgyoGRhOy_em36mmJ1pNtpchiz7Es-q86OUjA=w16383");'></div>''', unsafe_allow_html=True)
 
-st.title("Fantasy Football Championship Odds")
+st.title("Toolshed Championship Odds")
 league_website = "Sleeper"
 url = "599841620514373632"
 season_weeks = 14
@@ -166,7 +166,6 @@ n_teams = len(teams_canonical)
 
 
 n_playoff_teams = rjson['settings']['playoff_teams']
-st.header("{} League".format(rjson['name']))
 
 
 # Sleeper specific
@@ -222,19 +221,17 @@ if url != "" and season_weeks != '':
     if game_vs_league_median:
         total_wins += rotis_wins.sum(axis=0)
     
-    st.write("Current Standings")
     seeds = np.array([1,2,6,4,5,7,8,10,9,3], dtype=int) # Authoritative seeding
+
+    df_standings = pd.DataFrame(np.c_[seeds, total_wins, pts.sum(axis=0), rotis_win_pct], index=teams_canonical,
+                            columns=['Seed', 'Wins', 'Pts', 'Rotis. Win %'])
+    
+    
     df_standings = pd.DataFrame(np.c_[seeds, total_wins, pts.sum(axis=0), rotis_win_pct], index=teams_canonical,
                             columns=['Seed', 'Wins', 'Pts', 'Rotis. Win %'])
     
     df_standings.sort_values('Seed', inplace=True)
 
-    # This should be generated from scratch...
-    st.dataframe(df_standings.style.format("{:.0f}", subset=['Seed'])\
-                            .format("{:.1f}", subset=['Pts', 'Wins'])\
-                            .format("{:.3f}", subset=['Rotis. Win %']))
-
-    
     # This is not sleeper specific...
     ptsAvg = pts_played.mean()
     bonus = np.zeros(n_teams)
@@ -331,10 +328,21 @@ if url != "" and season_weeks != '':
     dfPRO.sort_values("Champion", ascending=False, inplace=True)
     
 
-    st.subheader("Playoff Outcomes")
+    st.subheader("Championship Chances")
     st.dataframe(dfPRO.style.format("{:.0f}")\
         .format("${:.0f}", subset=['Cash'])\
         .background_gradient(cmap='Greens', low=0.0, high=0.7))
+    
+
+
+    st.subheader("Final Regular Season Standings")
+
+    # This should be generated from scratch...
+    st.dataframe(df_standings.style.format("{:.0f}", subset=['Seed'])\
+                            .format("{:.1f}", subset=['Pts', 'Wins'])\
+                            .format("{:.3f}", subset=['Rotis. Win %'])\
+                            .background_gradient(cmap='RdBu_r', low=1.25, high=1.25, subset=['Wins', 'Pts', 'Rotis. Win %']))
+
     
 
     # Choose playoff teams...
