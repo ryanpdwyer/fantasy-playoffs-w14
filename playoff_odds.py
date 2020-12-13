@@ -223,7 +223,7 @@ if url != "" and season_weeks != '':
     
     seeds = np.array([1,2,6,4,5,7,8,10,9,3], dtype=int) # Authoritative seeding
 
-    df_standings = pd.DataFrame(np.c_[seeds, total_wins, pts.sum(axis=0), rotis_win_pct], index=teams_canonical,
+    df_standings = pd.DataFrame(np.c_[seeds, total_wins, pts_played.sum(axis=0), rotis_win_pct], index=teams_canonical,
                             columns=['Seed', 'Wins', 'Pts', 'Rotis. Win %'])
     
     
