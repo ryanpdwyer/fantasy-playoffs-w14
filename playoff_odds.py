@@ -225,10 +225,7 @@ if url != "" and season_weeks != '':
 
     df_standings = pd.DataFrame(np.c_[seeds, total_wins, pts_played.sum(axis=0), rotis_win_pct], index=teams_canonical,
                             columns=['Seed', 'Wins', 'Pts', 'Rotis. Win %'])
-    
-    
-    df_standings = pd.DataFrame(np.c_[seeds, total_wins, pts.sum(axis=0), rotis_win_pct], index=teams_canonical,
-                            columns=['Seed', 'Wins', 'Pts', 'Rotis. Win %'])
+
     
     df_standings.sort_values('Seed', inplace=True)
 
